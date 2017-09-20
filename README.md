@@ -1,6 +1,6 @@
 Budget Planner (Ale) - create a budget for event, month or a hobby and share it with friends
 
-#Technical specifications
+# Technical specifications
 
 The project is a simple web app (server-rendered react progressive web app). Optimized both for desktop and mobile. The landing page should be technically SEO and mobile friendly with offline support.
 
@@ -8,7 +8,7 @@ It will require an NodeJS API and a (Relational/NoSQL) database which will be re
 
 Well documented, fully tested with unit and integration tests. Easily deployable with a CI and CD pipelines (Jenkins) and webpack build process.
 
-###Phase 1 - the MVP (deadline 20.10.2017)
+### Phase 1 - the MVP (deadline 20.10.2017)
 
 - Required research
     - Server-side rendering with React - NextJS and setting up the initial structure
@@ -33,7 +33,7 @@ Well documented, fully tested with unit and integration tests. Easily deployable
     - Set up webpack both for the server and the client
     - Use flow type checking both on the server and on the client
 
-###Phase 2 - the product and the business plan
+### Phase 2 - the product and the business plan
 
 - Required research
 - Project management and planning
