@@ -1,4 +1,3 @@
-import { ILogger } from './ILogger';
 import * as _ from 'lodash';
 
 const currentEnv = process.env.NODE_ENV || 'development';
