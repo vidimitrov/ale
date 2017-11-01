@@ -10,15 +10,19 @@ export const Header = ({
       <meta httpEquiv='X-UA-Compatible' content='IE=edge,chrome=1' />
       <title>{title}</title>
       <link href='/static/styles/reset.css' media='all' rel='stylesheet' />
+      <link href='/static/styles/login.css' media='all' rel='stylesheet' />
       <meta name='viewport' content='initial-scale=1.0, width=device-width' />
       <link rel='manifest' href='/static/manifest.json' />
-      <meta name='google-site-verification' content='HiyG9aTgRvcr-zl5c2aerEFiEFgDWQpvmvSD3xPn4dw' />
+      {/* <meta name='google-site-verification' content='' /> */}
 
       <meta name='renderer' content='webkit' />
       <meta httpEquiv='Cache-Control' content='no-siteapp' />
 
       {/* Find a way to load this async */}
       <link href='https://fonts.googleapis.com/css?family=Lato:400,700'
+        rel='stylesheet'
+        type='text/css' />
+      <link href='https://fonts.googleapis.com/css?family=Roboto:400,700'
         rel='stylesheet'
         type='text/css' />
 
@@ -47,24 +51,24 @@ export const Header = ({
       <meta name='msapplication-config' content='/static/images/icons/browserconfig.xml' />
 
       {/*  Google+ Facebook */}
-      <meta property='og:image' content='/static/images/seemba-logo.png' />
-      <meta property='og:description' content='Search places around you with Seemba Aggregator' />
-      <meta property='og:url' content='http://seem.ba' />
-      <meta property='og:title' content='Seemba Aggregator' />
+      <meta property='og:image' content='/static/images/logo.png' />
+      <meta property='og:description' content='Budget Planner (Ale) - create a budget for event, month or a hobby and share it with friends' />
+      <meta property='og:url' content='http://ale.com' />
+      <meta property='og:title' content='Ale - Budget Planner' />
       {/*<meta property='fb:app_id' content='FB_APP_ID' /> */}
 
       {/* Youtube */}
-      <meta {...{ itemProp: 'name' }} content='Seemba Aggregator' />
+      <meta {...{ itemProp: 'name' }} content='Ale - Budget Planner' />
       <meta {...{ itemProp: 'description' }}
-        content='Search places around you with Seemba Aggregator' />
-      <meta {...{ itemProp: 'image' }} content='/static/images/seemba-logo.png' />
+        content='Budget Planner (Ale) - create a budget for event, month or a hobby and share it with friends' />
+      <meta {...{ itemProp: 'image' }} content='/static/images/logo.png' />
 
       {/* Twitter */}
       <meta name='twitter:card' content='summary' />
-      <meta name='twitter:title' content='Seemba Aggregator' />
+      <meta name='twitter:title' content='Ale - Budget Planner' />
       <meta name='twitter:description'
-        content='Search places around you with Seemba Aggregator' />
-      <meta name='twitter:image' content='/static/images/seemba-logo.png' />
+        content='Budget Planner (Ale) - create a budget for event, month or a hobby and share it with friends' />
+      <meta name='twitter:image' content='/static/images/logo.png' />
     </Head>
   )
 };

@@ -1,2 +1,2 @@
 User-agent: *
-Sitemap: https://seem.ba/sitemap.xml
+Sitemap: https://ale.com/sitemap.xml

@@ -27,7 +27,7 @@ app.prepare()
     const router = new Router();
 
     router.get('/service-worker.js', async (ctx) => {
-      const filePath = join(__dirname, './.next/', 'service-worker.js');
+      const filePath = join(__dirname, './static/', 'service-worker.js');
 
       ctx.set('Content-Type', 'application/javascript')
       await app.serveStatic(ctx.req, ctx.res, filePath);

@@ -1,11 +1,11 @@
 {
-  "name": "Seemba Aggregator",
-  "short_name": "SeembaAggr",
+  "name": "Ale - Budget Planner",
+  "short_name": "Ale",
   "start_url": "/",
   "theme_color": "#fff",
   "display": "standalone",
   "background_color": "#fff",
-  "description": "Search places around you with Seemba Aggregator",
+  "description": "Budget Planner (Ale) - create a budget for event, month or a hobby and share it with friends",
   "icons": [
     {
       "src": "/static/images/icons/android-chrome-192x192.png",
@@ -20,11 +20,8 @@
   ],
   "related_applications": [
     {
-      "platform": "web"
-    },
-    {
-      "platform": "play",
-      "url": "https://play.google.com/store/apps/details?id=com.goseemba"
+      "platform": "web",
+      "url": "http://ale.com"
     }
   ]
 }
