@@ -1,0 +1,25 @@
+# Runtime
+logs
+*.log
+pids
+*.pid
+*.seed
+coverage
+.lock-wscript
+
+# Build artifacts
+dist/
+build/
+!dist/.gitkeep
+local-apps-data
+
+# Env
+node_modules
+
+# Editors & IDEs
+.vscode
+
+# iOS
+.DS_Store
+
+development.ts
