@@ -52,7 +52,7 @@ export const Header = ({
 
       {/*  Google+ Facebook */}
       <meta property='og:image' content='/static/images/logo.png' />
-      <meta property='og:description' content='Budget Planner (Ale) - create a budget for event, month or a hobby and share it with friends' />
+      <meta property='og:description' content='Ale - create a budget for event, month or a hobby and share it with friends' />
       <meta property='og:url' content='http://ale.com' />
       <meta property='og:title' content='Ale - Budget Planner' />
       {/*<meta property='fb:app_id' content='FB_APP_ID' /> */}
@@ -60,14 +60,14 @@ export const Header = ({
       {/* Youtube */}
       <meta {...{ itemProp: 'name' }} content='Ale - Budget Planner' />
       <meta {...{ itemProp: 'description' }}
-        content='Budget Planner (Ale) - create a budget for event, month or a hobby and share it with friends' />
+        content='Ale - create a budget for event, month or a hobby and share it with friends' />
       <meta {...{ itemProp: 'image' }} content='/static/images/logo.png' />
 
       {/* Twitter */}
       <meta name='twitter:card' content='summary' />
       <meta name='twitter:title' content='Ale - Budget Planner' />
       <meta name='twitter:description'
-        content='Budget Planner (Ale) - create a budget for event, month or a hobby and share it with friends' />
+        content='Ale - create a budget for event, month or a hobby and share it with friends' />
       <meta name='twitter:image' content='/static/images/logo.png' />
     </Head>
   )

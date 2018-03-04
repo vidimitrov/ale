@@ -62,13 +62,13 @@ export class LandingPage extends React.Component {
 
     return (
       <App userAgent={userAgent}>
-        <Header title='Ale - Budget Planner' />
+        <Header title='Ale' />
         <div className="login-page">
           <div className="form">
             <img src='/static/images/logo.png'
               alt='Ale logo'
               style={styles.image} />
-            <h1 style={styles.header}>Ale - Budget Planner</h1>
+            <h1 style={styles.header}>Ale</h1>
             <form className="login-form">
               <input type="text" placeholder="Username" />
               <input type="password" placeholder="Password" />
