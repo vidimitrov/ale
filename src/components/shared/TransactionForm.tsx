@@ -31,6 +31,14 @@ export function TransactionForm({
     e.preventDefault();
 
     try {
+      const {
+        data: { user },
+        error: userError,
+      } = await supabase.auth.getUser();
+
+      if (userError) throw userError;
+      if (!user) throw new Error("You must be logged in to add transactions");
+
       const { error: submitError } = await supabase
         .from(type === "expense" ? "expenses" : "income")
         .insert([
@@ -39,6 +47,7 @@ export function TransactionForm({
             [type === "expense" ? "category" : "source"]: transaction.category,
             description: transaction.description,
             date: transaction.date,
+            user_id: user.id,
           },
         ]);
 
@@ -58,7 +67,11 @@ export function TransactionForm({
       setTimeout(() => setSuccess(null), 3000);
     } catch (err) {
       console.error(`Error adding ${type}:`, err);
-      setError(`Failed to add ${type}. Please try again.`);
+      setError(
+        err instanceof Error
+          ? err.message
+          : `Failed to add ${type}. Please try again.`
+      );
       setTimeout(() => setError(null), 3000);
     }
   };
