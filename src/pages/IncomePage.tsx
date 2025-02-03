@@ -46,8 +46,10 @@ export default function IncomePage() {
         categories={INCOME_SOURCES}
       />
 
-      <div className="mt-8 bg-white rounded-lg shadow-md p-6">
-        <h2 className="text-2xl font-semibold mb-6">Recent Income</h2>
+      <div className="mt-8 bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+        <h2 className="text-2xl font-semibold mb-6 text-gray-900 dark:text-gray-100">
+          Recent Income
+        </h2>
         <TransactionList type="income" transactions={incomes} />
       </div>
     </>
