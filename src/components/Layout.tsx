@@ -11,6 +11,7 @@ import {
   Menu,
   Sun,
   Moon,
+  Landmark,
 } from "lucide-react";
 import { supabase } from "../lib/supabase";
 import type { User } from "@supabase/supabase-js";
@@ -127,7 +128,7 @@ export default function Layout({ children, user }: LayoutProps) {
       {/* Mobile Bottom Navigation */}
       <div className="lg:hidden fixed bottom-0 left-0 right-0 h-16 bg-white dark:bg-gray-800 shadow-lg z-50">
         <nav className="h-full flex items-center justify-around">
-          {["Expenses", "Income", "Goals"].map((item, index) => (
+          {["Expenses", "Income", "Goals", "Wealth"].map((item, index) => (
             <Link
               key={item}
               href={index === 0 ? "/" : `/${item.toLowerCase()}`}
@@ -141,8 +142,10 @@ export default function Layout({ children, user }: LayoutProps) {
                 <Receipt className="w-5 h-5" />
               ) : index === 1 ? (
                 <ArrowUpCircle className="w-5 h-5" />
-              ) : (
+              ) : index === 2 ? (
                 <Target className="w-5 h-5" />
+              ) : (
+                <Landmark className="w-5 h-5" />
               )}
               <span className="mt-1 text-xs">{item}</span>
             </Link>
@@ -186,7 +189,7 @@ export default function Layout({ children, user }: LayoutProps) {
             )}
           </div>
           <nav className="flex-1 px-4 py-4 space-y-1">
-            {["Expenses", "Income", "Goals"].map((item, index) => (
+            {["Expenses", "Income", "Goals", "Wealth"].map((item, index) => (
               <Link
                 key={item}
                 href={index === 0 ? "/" : `/${item.toLowerCase()}`}
@@ -200,8 +203,10 @@ export default function Layout({ children, user }: LayoutProps) {
                   <Receipt className="w-5 h-5" />
                 ) : index === 1 ? (
                   <ArrowUpCircle className="w-5 h-5" />
-                ) : (
+                ) : index === 2 ? (
                   <Target className="w-5 h-5" />
+                ) : (
+                  <Landmark className="w-5 h-5" />
                 )}
                 {isSidebarOpen && <span className="ml-2">{item}</span>}
               </Link>
