@@ -86,6 +86,9 @@ export function TransactionList({
 
       {/* Desktop view */}
       <div className="hidden md:block overflow-x-auto">
+        <h2 className="text-xl font-semibold text-gray-900 dark:text-white pb-6">
+          Recent {type === "expense" ? "expenses" : "incomes"}
+        </h2>
         <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
           <thead className="bg-gray-50 dark:bg-gray-800">
             <tr>
