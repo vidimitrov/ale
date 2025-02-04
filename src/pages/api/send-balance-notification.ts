@@ -20,6 +20,19 @@ export default async function handler(
   try {
     const { remainingBalance, remainingPercentage, userEmail } = req.body as RequestBody;
 
+    // Validate required fields
+    if (!userEmail) {
+      return res.status(400).json({ error: 'User email is required' });
+    }
+
+    if (typeof remainingBalance !== 'number' || isNaN(remainingBalance)) {
+      return res.status(400).json({ error: 'Valid remaining balance is required' });
+    }
+
+    if (typeof remainingPercentage !== 'number' || isNaN(remainingPercentage)) {
+      return res.status(400).json({ error: 'Valid remaining percentage is required' });
+    }
+
     const emailHtml = `
       <h2>Low Balance Alert</h2>
       <p>Your remaining balance is now <strong>$${remainingBalance.toFixed(2)}</strong></p>
