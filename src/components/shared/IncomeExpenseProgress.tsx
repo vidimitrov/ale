@@ -52,7 +52,7 @@ export function IncomeExpenseProgress({
   }, [remainingPercentage, remainingBalance, user?.email]);
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-lg p-6">
+    <div className="bg-white dark:bg-gray-800 rounded-lg">
       <h2 className="text-2xl font-semibold mb-4 text-gray-900 dark:text-gray-100">
         Monthly Overview
       </h2>

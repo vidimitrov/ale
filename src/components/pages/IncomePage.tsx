@@ -63,23 +63,27 @@ export default function IncomePage() {
 
   return (
     <div className="space-y-6">
-      <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-lg">
-        <TransactionForm
-          type="income"
-          onSuccess={fetchData}
-          icon={<span className="text-2xl">💵</span>}
-          title="Add Income"
-          categories={incomeSources}
-        />
-      </div>
-
-      <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-lg h-[500px]">
-        <div className="h-full overflow-auto">
-          <TransactionList
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Left Column */}
+        <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-lg">
+          <TransactionForm
             type="income"
-            transactions={incomes}
-            onDelete={handleDelete}
+            onSuccess={fetchData}
+            icon={<span className="text-2xl">💵</span>}
+            title="Add Income"
+            categories={incomeSources}
           />
+        </div>
+
+        {/* Right Column */}
+        <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-lg h-[500px]">
+          <div className="h-full overflow-auto">
+            <TransactionList
+              type="income"
+              transactions={incomes}
+              onDelete={handleDelete}
+            />
+          </div>
         </div>
       </div>
     </div>

@@ -127,7 +127,7 @@ export function TransactionForm({
   };
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-lg p-6">
+    <div className="bg-white dark:bg-gray-800 rounded-lg">
       <h2 className="text-2xl font-semibold mb-6 flex items-center text-black dark:text-white">
         {icon}
         <span className="ml-2">{title}</span>
