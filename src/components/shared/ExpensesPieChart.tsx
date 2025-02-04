@@ -54,9 +54,17 @@ export function ExpensesPieChart({ expenses }: ExpensesPieChartProps) {
 
   return (
     <div className="min-h-[600px] flex flex-col" onClick={handleContainerClick}>
-      <h2 className="text-xl font-semibold mb-4 text-gray-900 dark:text-white">
-        Expenses by Category
-      </h2>
+      <div className="flex justify-between items-center mb-4">
+        <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
+          Expenses by Category
+        </h2>
+        <span className="text-sm text-gray-600 dark:text-gray-400">
+          {new Date().toLocaleString("default", {
+            month: "long",
+            year: "numeric",
+          })}
+        </span>
+      </div>
       <div
         className="flex flex-col md:flex-row gap-8"
         onClick={(e: React.MouseEvent) => e.stopPropagation()}

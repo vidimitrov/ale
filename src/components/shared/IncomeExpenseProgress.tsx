@@ -53,9 +53,17 @@ export function IncomeExpenseProgress({
 
   return (
     <div className="bg-white dark:bg-gray-800 rounded-lg">
-      <h2 className="text-2xl font-semibold mb-4 text-gray-900 dark:text-gray-100">
-        Monthly Overview
-      </h2>
+      <div className="flex justify-between items-center mb-4">
+        <h2 className="text-2xl font-semibold text-gray-900 dark:text-gray-100">
+          Monthly Overview
+        </h2>
+        <span className="text-sm text-gray-600 dark:text-gray-400">
+          {new Date().toLocaleString("default", {
+            month: "long",
+            year: "numeric",
+          })}
+        </span>
+      </div>
 
       <div className="space-y-2">
         <div className="flex justify-between text-sm text-gray-600 dark:text-gray-300">
