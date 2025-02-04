@@ -1,8 +1,13 @@
 import { AppProps } from "next/app";
 import Head from "next/head";
+import { useEffect } from "react";
 import "@/styles/globals.css";
 
 function MyApp({ Component, pageProps }: AppProps) {
+  useEffect(() => {
+    document.documentElement.classList.add("dark");
+  }, []);
+
   return (
     <>
       <Head>
