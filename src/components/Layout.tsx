@@ -134,7 +134,7 @@ export default function Layout({ children, user }: LayoutProps) {
               href={index === 0 ? "/" : `/${item.toLowerCase()}`}
               className={`flex flex-col items-center justify-center px-3 py-2 text-sm font-medium ${
                 isActive(index === 0 ? "/" : `/${item.toLowerCase()}`)
-                  ? "text-primary dark:text-primary-light"
+                  ? "text-primary dark:text-primary"
                   : "text-gray-600 dark:text-gray-300"
               }`}
             >
