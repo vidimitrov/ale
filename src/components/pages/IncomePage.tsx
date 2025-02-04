@@ -1,7 +1,11 @@
 import React, { useEffect, useState } from "react";
+import {
+  showDeleteConfirmation,
+  showDeleteSuccess,
+} from "../../utils/deleteConfirmation";
+import Swal from "sweetalert2";
 import { TransactionForm } from "../shared/TransactionForm";
 import { TransactionList } from "../shared/TransactionList";
-import { IncomeExpenseProgress } from "../shared/IncomeExpenseProgress";
 import { supabase } from "../../lib/supabase";
 
 const incomeSources = [
@@ -15,7 +19,30 @@ const incomeSources = [
 
 export default function IncomePage() {
   const [incomes, setIncomes] = useState<any[]>([]);
-  const [expenses, setExpenses] = useState<any[]>([]);
+
+  const handleDelete = async (id: string) => {
+    const confirmed = await showDeleteConfirmation({
+      text: "Are you sure you want to delete this income?",
+    });
+
+    if (confirmed) {
+      try {
+        const { error } = await supabase.from("income").delete().eq("id", id);
+
+        if (error) throw error;
+        await showDeleteSuccess();
+        await fetchData();
+      } catch (error) {
+        console.error("Error deleting income:", error);
+        Swal.fire({
+          title: "Error!",
+          text: "Failed to delete the income. Please try again.",
+          icon: "error",
+          confirmButtonColor: "#dc2626",
+        });
+      }
+    }
+  };
 
   const fetchData = async () => {
     try {
@@ -24,13 +51,7 @@ export default function IncomePage() {
         .select("*")
         .order("date", { ascending: false });
 
-      const { data: expensesData } = await supabase
-        .from("expenses")
-        .select("*")
-        .order("date", { ascending: false });
-
       setIncomes(incomesData || []);
-      setExpenses(expensesData || []);
     } catch (error) {
       console.error("Error fetching data:", error);
     }
@@ -42,38 +63,23 @@ export default function IncomePage() {
 
   return (
     <div className="space-y-6">
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Left Column */}
-        <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-lg">
-          <TransactionForm
-            type="income"
-            onSuccess={fetchData}
-            icon={<span className="text-2xl">💵</span>}
-            title="Add Income"
-            categories={incomeSources}
-          />
-        </div>
-
-        {/* Right Column */}
-        <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-lg">
-          <IncomeExpenseProgress incomes={incomes} expenses={expenses} />
-        </div>
+      <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-lg">
+        <TransactionForm
+          type="income"
+          onSuccess={fetchData}
+          icon={<span className="text-2xl">💵</span>}
+          title="Add Income"
+          categories={incomeSources}
+        />
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Left Column - Transaction List */}
-        <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-lg h-[500px]">
-          <div className="h-full overflow-auto">
-            <TransactionList type="income" transactions={incomes} />
-          </div>
-        </div>
-
-        {/* Right Column - Coming Soon */}
-        <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-lg h-[500px] flex items-center justify-center">
-          <div className="text-center text-gray-600 dark:text-gray-300">
-            <p className="text-lg font-medium">Income Distribution</p>
-            <p className="mt-2">Coming soon...</p>
-          </div>
+      <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-lg h-[500px]">
+        <div className="h-full overflow-auto">
+          <TransactionList
+            type="income"
+            transactions={incomes}
+            onDelete={handleDelete}
+          />
         </div>
       </div>
     </div>

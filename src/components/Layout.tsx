@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -23,7 +23,9 @@ interface LayoutProps {
 export default function Layout({ children, user }: LayoutProps) {
   const router = useRouter();
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(true);
+  const userMenuRef = useRef<HTMLDivElement>(null);
 
   const updateTheme = useCallback((isDark: boolean) => {
     if (isDark) {
@@ -42,6 +44,18 @@ export default function Layout({ children, user }: LayoutProps) {
     const initialDarkMode = savedTheme !== "light";
     setIsDarkMode(initialDarkMode);
     updateTheme(initialDarkMode);
+
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        userMenuRef.current &&
+        !userMenuRef.current.contains(event.target as Node)
+      ) {
+        setIsUserMenuOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [updateTheme]);
 
   const toggleDarkMode = () => {
@@ -57,9 +71,88 @@ export default function Layout({ children, user }: LayoutProps) {
 
   return (
     <div className="min-h-screen flex relative">
-      {/* Sidebar */}
+      {/* Mobile Header */}
+      <div className="lg:hidden fixed top-0 left-0 right-0 h-16 bg-white dark:bg-gray-800 shadow-lg z-50 grid grid-cols-3 items-center px-4">
+        <div className="flex items-center">
+          <Image src="/logo.png" alt="Ale logo" width={32} height={32} />
+        </div>
+        <div className="flex items-center justify-center">
+          <span className="text-xl font-bold text-black dark:text-white">
+            Ale
+          </span>
+        </div>
+        <div className="relative flex justify-end" ref={userMenuRef}>
+          <button
+            onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
+            className="p-2 rounded-full hover:bg-primary-light dark:hover:bg-primary-dark"
+          >
+            <UserCircle className="w-6 h-6 text-primary dark:text-primary-light" />
+          </button>
+
+          {isUserMenuOpen && (
+            <div className="absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white dark:bg-gray-800 ring-1 ring-black ring-opacity-5">
+              <div className="py-1">
+                <div className="px-4 py-2 text-sm text-gray-700 dark:text-gray-200 border-b border-gray-200 dark:border-gray-700">
+                  {user?.email || "Guest"}
+                </div>
+                <button
+                  onClick={toggleDarkMode}
+                  className="w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center"
+                >
+                  {isDarkMode ? (
+                    <>
+                      <Sun className="w-4 h-4 mr-2" />
+                      Light Mode
+                    </>
+                  ) : (
+                    <>
+                      <Moon className="w-4 h-4 mr-2" />
+                      Dark Mode
+                    </>
+                  )}
+                </button>
+                <button
+                  onClick={() => supabase.auth.signOut()}
+                  className="w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center"
+                >
+                  <LogOut className="w-4 h-4 mr-2" />
+                  Sign Out
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Mobile Bottom Navigation */}
+      <div className="lg:hidden fixed bottom-0 left-0 right-0 h-16 bg-white dark:bg-gray-800 shadow-lg z-50">
+        <nav className="h-full flex items-center justify-around">
+          {["Expenses", "Income", "Goals"].map((item, index) => (
+            <Link
+              key={item}
+              href={index === 0 ? "/" : `/${item.toLowerCase()}`}
+              className={`flex flex-col items-center justify-center px-3 py-2 text-sm font-medium ${
+                isActive(index === 0 ? "/" : `/${item.toLowerCase()}`)
+                  ? "text-primary dark:text-primary-light"
+                  : "text-gray-600 dark:text-gray-300"
+              }`}
+            >
+              {index === 0 ? (
+                <Receipt className="w-5 h-5" />
+              ) : index === 1 ? (
+                <ArrowUpCircle className="w-5 h-5" />
+              ) : (
+                <Target className="w-5 h-5" />
+              )}
+              <span className="mt-1 text-xs">{item}</span>
+            </Link>
+          ))}
+        </nav>
+      </div>
+
+      {/* Desktop Sidebar */}
       <div
-        className={`fixed inset-y-0 left-0 transform ${
+        className={`hidden lg:block fixed inset-y-0 left-0 transform ${
           isSidebarOpen ? "translate-x-0 w-64" : "translate-x-0 w-20"
         } transition-all duration-300 ease-in-out bg-white dark:bg-gray-800 shadow-lg z-45`}
       >
@@ -165,7 +258,7 @@ export default function Layout({ children, user }: LayoutProps) {
           isSidebarOpen ? "lg:pl-64" : "lg:pl-20"
         }`}
       >
-        <main className="flex-1 py-8 px-6 overflow-y-auto text-gray-900 dark:text-primary-light">
+        <main className="flex-1 py-8 px-6 overflow-y-auto text-gray-900 dark:text-primary-light mt-16 mb-16 lg:mt-0 lg:mb-0">
           {children}
         </main>
       </div>
