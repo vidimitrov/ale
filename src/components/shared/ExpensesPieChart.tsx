@@ -16,16 +16,17 @@ export function ExpensesPieChart({ expenses }: ExpensesPieChartProps) {
       {
         data: [] as number[],
         backgroundColor: [
-          "#E0FFFF", // Light Cyan (primary-light)
-          "#00FFFF", // Cyan (primary)
-          "#008B8B", // Dark Cyan (primary-dark)
-          "#E0F2F1", // Light Teal (secondary-light)
-          "#008080", // Teal (secondary)
-          "#004D40", // Dark Teal (secondary-dark)
-          "#B2EBF2", // Light Cyan variant
-          "#00BCD4", // Cyan variant
-          "#006064", // Dark Cyan variant
-          "#80CBC4", // Teal variant
+          "#4CAF50", // Green
+          "#F44336", // Red
+          "#FFC107", // Yellow
+          "#FF9800", // Orange
+          "#9C27B0", // Purple
+          "#2196F3", // Blue
+          "#E91E63", // Pink
+          "#795548", // Brown
+          "#607D8B", // Blue Grey
+          "#8BC34A", // Light Green
+          "#FF5722", // Deep Orange
         ],
         borderWidth: 1,
       },
@@ -50,16 +51,17 @@ export function ExpensesPieChart({ expenses }: ExpensesPieChartProps) {
         {
           data,
           backgroundColor: [
-            "#E0FFFF", // Light Cyan (primary-light)
-            "#00FFFF", // Cyan (primary)
-            "#008B8B", // Dark Cyan (primary-dark)
-            "#E0F2F1", // Light Teal (secondary-light)
-            "#008080", // Teal (secondary)
-            "#004D40", // Dark Teal (secondary-dark)
-            "#B2EBF2", // Light Cyan variant
-            "#00BCD4", // Cyan variant
-            "#006064", // Dark Cyan variant
-            "#80CBC4", // Teal variant
+            "#4CAF50", // Green
+            "#F44336", // Red
+            "#FFC107", // Yellow
+            "#FF9800", // Orange
+            "#9C27B0", // Purple
+            "#2196F3", // Blue
+            "#E91E63", // Pink
+            "#795548", // Brown
+            "#607D8B", // Blue Grey
+            "#8BC34A", // Light Green
+            "#FF5722", // Deep Orange
           ],
           borderWidth: 1,
         },
@@ -76,8 +78,8 @@ export function ExpensesPieChart({ expenses }: ExpensesPieChartProps) {
   }
 
   return (
-    <div className="w-full max-w-md mx-auto p-4 bg-white dark:bg-gray-800 rounded-lg shadow-md">
-      <h2 className="text-xl font-semibold mb-4 text-center text-primary dark:text-primary-light">
+    <div className="w-full max-w-md mx-auto p-4 bg-white dark:bg-gray-800 rounded-lg">
+      <h2 className="text-xl font-semibold mb-4 text-center text-black dark:text-white">
         Expenses by Category
       </h2>
       <Pie
@@ -87,7 +89,7 @@ export function ExpensesPieChart({ expenses }: ExpensesPieChartProps) {
             legend: {
               position: "bottom",
               labels: {
-                color: "rgb(0, 255, 255)", // Cyan (primary)
+                color: "rgb(75, 85, 99)", // Gray-600
                 font: {
                   size: 12,
                 },
@@ -100,9 +102,9 @@ export function ExpensesPieChart({ expenses }: ExpensesPieChartProps) {
                   return `$${value.toFixed(2)}`;
                 },
               },
-              backgroundColor: "rgba(0, 139, 139, 0.8)", // Dark Cyan (primary-dark) with opacity
-              titleColor: "rgb(224, 255, 255)", // Light Cyan (primary-light)
-              bodyColor: "rgb(224, 255, 255)", // Light Cyan (primary-light)
+              backgroundColor: "rgba(31, 41, 55, 0.9)", // Gray-800 with opacity
+              titleColor: "rgb(243, 244, 246)", // Gray-100
+              bodyColor: "rgb(243, 244, 246)", // Gray-100
             },
           },
         }}

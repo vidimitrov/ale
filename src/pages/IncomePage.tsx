@@ -9,6 +9,7 @@ const INCOME_SOURCES = [
   "Salary",
   "Freelance",
   "Investments",
+  "Passive Income",
   "Business",
   "Rental",
   "Other",

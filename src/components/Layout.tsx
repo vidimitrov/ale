@@ -77,7 +77,7 @@ export default function Layout({ children, user }: LayoutProps) {
             />
             {isSidebarOpen && (
               <>
-                <span className="text-xl font-bold text-primary dark:text-primary-light">
+                <span className="text-xl font-bold text-black dark:text-white">
                   Ale
                 </span>
                 <button

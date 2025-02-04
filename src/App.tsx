@@ -1,4 +1,5 @@
 import React from "react";
+import { Toaster } from "react-hot-toast";
 import {
   BrowserRouter as Router,
   Routes,
@@ -27,15 +28,27 @@ function App() {
   }
 
   return (
-    <Router>
-      <Layout user={user}>
-        <Routes>
-          <Route path="/" element={<ExpensesPage />} />
-          <Route path="/income" element={<IncomePage />} />
-          <Route path="*" element={<Navigate to="/" replace />} />
-        </Routes>
-      </Layout>
-    </Router>
+    <>
+      <Toaster
+        position="top-center"
+        toastOptions={{
+          duration: 3000,
+          style: {
+            background: "#333",
+            color: "#fff",
+          },
+        }}
+      />
+      <Router>
+        <Layout user={user}>
+          <Routes>
+            <Route path="/" element={<ExpensesPage />} />
+            <Route path="/income" element={<IncomePage />} />
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
+        </Layout>
+      </Router>
+    </>
   );
 }
 

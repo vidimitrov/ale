@@ -6,9 +6,9 @@ export default {
     extend: {
       colors: {
         primary: {
-          light: "#E0FFFF", // Light Cyan
-          DEFAULT: "#00FFFF", // Cyan
-          dark: "#008B8B", // Dark Cyan
+          light: "#86EFAC", // Light Green (green-300)
+          DEFAULT: "#22C55E", // Green (green-500)
+          dark: "#15803D", // Dark Green (green-700)
         },
         secondary: {
           light: "#E0F2F1", // Light Teal
