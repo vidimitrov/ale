@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { format } from "date-fns";
 import { PlusCircle, DollarSign } from "lucide-react";
 import { supabase } from "../../lib/supabase";
-const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 import toast from "react-hot-toast";
 
 interface TransactionFormProps {

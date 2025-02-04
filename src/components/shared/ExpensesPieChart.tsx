@@ -1,114 +1,83 @@
-import { useEffect, useState, useContext } from "react";
-import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
-import { Pie } from "react-chartjs-2";
-import type { Expense } from "../../types";
-
-ChartJS.register(ArcElement, Tooltip, Legend);
+import React, { useMemo } from "react";
+import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from "recharts";
 
 interface ExpensesPieChartProps {
-  expenses: Expense[];
+  expenses: Array<{
+    category: string;
+    amount: number;
+  }>;
+}
+
+interface ChartData {
+  name: string;
+  value: number;
 }
 
 export function ExpensesPieChart({ expenses }: ExpensesPieChartProps) {
-  const [chartData, setChartData] = useState({
-    labels: [] as string[],
-    datasets: [
-      {
-        data: [] as number[],
-        backgroundColor: [
-          "#4CAF50", // Green
-          "#F44336", // Red
-          "#FFC107", // Yellow
-          "#FF9800", // Orange
-          "#9C27B0", // Purple
-          "#2196F3", // Blue
-          "#E91E63", // Pink
-          "#795548", // Brown
-          "#607D8B", // Blue Grey
-          "#8BC34A", // Light Green
-          "#FF5722", // Deep Orange
-        ],
-        borderWidth: 1,
+  const data = useMemo<ChartData[]>(() => {
+    const categoryTotals = expenses.reduce<Record<string, number>>(
+      (acc, expense) => {
+        const category = expense.category;
+        acc[category] = (acc[category] || 0) + expense.amount;
+        return acc;
       },
-    ],
-  });
+      {}
+    );
 
-  useEffect(() => {
-    // Group expenses by category and sum amounts
-    const expensesByCategory = expenses.reduce((acc, expense) => {
-      const category = expense.category;
-      acc[category] = (acc[category] || 0) + Math.abs(expense.amount);
-      return acc;
-    }, {} as Record<string, number>);
-
-    // Convert to arrays for chart data
-    const labels = Object.keys(expensesByCategory);
-    const data = Object.values(expensesByCategory);
-
-    setChartData({
-      labels,
-      datasets: [
-        {
-          data,
-          backgroundColor: [
-            "#4CAF50", // Green
-            "#F44336", // Red
-            "#FFC107", // Yellow
-            "#FF9800", // Orange
-            "#9C27B0", // Purple
-            "#2196F3", // Blue
-            "#E91E63", // Pink
-            "#795548", // Brown
-            "#607D8B", // Blue Grey
-            "#8BC34A", // Light Green
-            "#FF5722", // Deep Orange
-          ],
-          borderWidth: 1,
-        },
-      ],
-    });
+    return Object.entries(categoryTotals).map(([name, value]) => ({
+      name,
+      value,
+    }));
   }, [expenses]);
 
-  if (expenses.length === 0) {
-    return (
-      <div className="w-full text-center p-4 text-primary dark:text-primary-light">
-        No expenses to display
-      </div>
-    );
-  }
+  const COLORS = [
+    "#10B981", // primary
+    "#EF4444", // red
+    "#F59E0B", // yellow
+    "#F97316", // orange
+    "#8B5CF6", // purple
+    "#3B82F6", // blue
+    "#EC4899", // pink
+    "#6B7280", // gray
+  ];
+
+  const totalExpenses = data.reduce((sum, item) => sum + item.value, 0);
 
   return (
-    <div className="w-full max-w-md mx-auto p-4 bg-white dark:bg-gray-800 rounded-lg">
-      <h2 className="text-xl font-semibold mb-4 text-center text-black dark:text-white">
+    <div className="h-full flex flex-col">
+      <h2 className="text-xl font-semibold mb-4 text-gray-900 dark:text-white">
         Expenses by Category
       </h2>
-      <Pie
-        data={chartData}
-        options={{
-          plugins: {
-            legend: {
-              position: "bottom",
-              labels: {
-                color: "rgb(75, 85, 99)", // Gray-600
-                font: {
-                  size: 12,
-                },
-              },
-            },
-            tooltip: {
-              callbacks: {
-                label: function (context) {
-                  const value = context.raw as number;
-                  return `$${value.toFixed(2)}`;
-                },
-              },
-              backgroundColor: "rgba(31, 41, 55, 0.9)", // Gray-800 with opacity
-              titleColor: "rgb(243, 244, 246)", // Gray-100
-              bodyColor: "rgb(243, 244, 246)", // Gray-100
-            },
-          },
-        }}
-      />
+      <div className="flex-1 flex items-center justify-center">
+        <ResponsiveContainer width="100%" height={400}>
+          <PieChart>
+            <Pie
+              data={data}
+              cx="50%"
+              cy="50%"
+              innerRadius={60}
+              outerRadius={120}
+              fill="#8884d8"
+              paddingAngle={2}
+              dataKey="value"
+              label={({ name, value }) => {
+                const percentage = ((value / totalExpenses) * 100).toFixed(0);
+                return `${name} (${percentage}%)`;
+              }}
+            >
+              {data.map((entry, index) => (
+                <Cell
+                  key={`cell-${index}`}
+                  fill={COLORS[index % COLORS.length]}
+                />
+              ))}
+            </Pie>
+            <Tooltip
+              formatter={(value: number) => [`$${value.toFixed(2)}`, "Amount"]}
+            />
+          </PieChart>
+        </ResponsiveContainer>
+      </div>
     </div>
   );
 }

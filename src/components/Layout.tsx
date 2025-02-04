@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { Link, useLocation } from "react-router-dom";
+import Image from "next/image";
+import Link from "next/link";
+import { useRouter } from "next/router";
 import {
   Receipt,
   ArrowUpCircle,
@@ -14,12 +16,12 @@ import { supabase } from "../lib/supabase";
 import type { User } from "@supabase/supabase-js";
 
 interface LayoutProps {
+  user: User | null;
   children: React.ReactNode;
-  user: User;
 }
 
 export default function Layout({ children, user }: LayoutProps) {
-  const location = useLocation();
+  const router = useRouter();
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [isDarkMode, setIsDarkMode] = useState(true);
 
@@ -50,7 +52,7 @@ export default function Layout({ children, user }: LayoutProps) {
   };
 
   const isActive = (path: string) => {
-    return location.pathname === path;
+    return router.pathname === path;
   };
 
   return (
@@ -67,12 +69,12 @@ export default function Layout({ children, user }: LayoutProps) {
               isSidebarOpen ? "justify-between" : "justify-center"
             }`}
           >
-            <img
-              src="/src/logo.png"
+            <Image
+              src="/logo.png"
               alt="Ale logo"
-              className={`${
-                isSidebarOpen ? "w-8 h-8" : "w-10 h-10"
-              } transition-all duration-300`}
+              width={isSidebarOpen ? 32 : 40}
+              height={isSidebarOpen ? 32 : 40}
+              className="transition-all duration-300"
               onClick={() => setIsSidebarOpen(!isSidebarOpen)}
             />
             {isSidebarOpen && (
@@ -94,7 +96,7 @@ export default function Layout({ children, user }: LayoutProps) {
             {["Expenses", "Income", "Goals"].map((item, index) => (
               <Link
                 key={item}
-                to={index === 0 ? "/" : `/${item.toLowerCase()}`}
+                href={index === 0 ? "/" : `/${item.toLowerCase()}`}
                 className={`flex items-center px-3 py-2 text-sm font-medium rounded-md ${
                   isActive(index === 0 ? "/" : `/${item.toLowerCase()}`)
                     ? "bg-primary text-white dark:bg-primary-dark"
@@ -123,7 +125,7 @@ export default function Layout({ children, user }: LayoutProps) {
               {isSidebarOpen && (
                 <div className="flex items-center text-sm text-gray-600 dark:text-gray-300">
                   <UserCircle className="w-5 h-5 mr-2" />
-                  <span className="truncate">{user.email}</span>
+                  <span className="truncate">{user?.email || "Guest"}</span>
                 </div>
               )}
               <div
