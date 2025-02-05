@@ -1,0 +1,3 @@
+[functions.check-inactivity]
+verify_jwt = false
+schedule = "0 20 * * *" # Run at 8 PM every day
