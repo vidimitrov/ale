@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { format } from "date-fns";
-import { PlusCircle, DollarSign } from "lucide-react";
+import { PlusCircle, DollarSign, Upload, X } from "lucide-react";
 import { supabase } from "../../lib/supabase";
 import toast from "react-hot-toast";
 
@@ -25,10 +25,91 @@ export function TransactionForm({
     category: categories[0],
     date: format(new Date(), "yyyy-MM-dd"),
     description: "",
+    receiptImage: null as File | null,
   });
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [isUploading, setIsUploading] = useState(false);
+
+  // Clean up the object URL when component unmounts or when a new image is selected
+  useEffect(() => {
+    return () => {
+      if (imagePreview) {
+        URL.revokeObjectURL(imagePreview);
+      }
+    };
+  }, [imagePreview]);
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0] || null;
+
+    // Clear previous preview if exists
+    if (imagePreview) {
+      URL.revokeObjectURL(imagePreview);
+    }
+
+    if (file) {
+      // Create a preview URL
+      const previewUrl = URL.createObjectURL(file);
+      setImagePreview(previewUrl);
+      setTransaction({ ...transaction, receiptImage: file });
+    } else {
+      setImagePreview(null);
+      setTransaction({ ...transaction, receiptImage: null });
+    }
+  };
+
+  const clearImage = () => {
+    if (imagePreview) {
+      URL.revokeObjectURL(imagePreview);
+    }
+    setImagePreview(null);
+    setTransaction({ ...transaction, receiptImage: null });
+
+    // Reset the file input
+    const fileInput = document.getElementById(
+      "receipt-image"
+    ) as HTMLInputElement;
+    if (fileInput) {
+      fileInput.value = "";
+    }
+  };
+
+  const uploadReceiptImage = async (userId: string): Promise<string | null> => {
+    if (!transaction.receiptImage) return null;
+
+    try {
+      // Generate a unique file name with timestamp and original extension
+      const fileExt = transaction.receiptImage.name.split(".").pop();
+      const fileName = `${Date.now()}.${fileExt}`;
+
+      // Upload the file to Supabase Storage
+      const { data, error } = await supabase.storage
+        .from("ale-images")
+        .upload(fileName, transaction.receiptImage, {
+          cacheControl: "3600",
+          upsert: false,
+        });
+
+      if (error) {
+        console.error("Storage upload error:", error);
+        throw error;
+      }
+
+      // Get the public URL for the uploaded file
+      const {
+        data: { publicUrl },
+      } = supabase.storage.from("ale-images").getPublicUrl(fileName);
+
+      return publicUrl;
+    } catch (error) {
+      console.error("Error uploading receipt image:", error);
+      throw error;
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsUploading(transaction.receiptImage !== null);
 
     try {
       const {
@@ -47,6 +128,12 @@ export function TransactionForm({
         .from("expenses")
         .select("amount");
 
+      // Upload receipt image if provided (only for expenses)
+      let receiptImageUrl = null;
+      if (type === "expense" && transaction.receiptImage) {
+        receiptImageUrl = await uploadReceiptImage(user.id);
+      }
+
       const { error: submitError } = await supabase
         .from(type === "expense" ? "expenses" : "income")
         .insert([
@@ -54,6 +141,8 @@ export function TransactionForm({
             amount: parseFloat(transaction.amount),
             [type === "expense" ? "category" : "source"]: transaction.category,
             ...(type === "expense" && { description: transaction.description }),
+            ...(type === "expense" &&
+              receiptImageUrl && { receipt_image_url: receiptImageUrl }),
             date: transaction.date,
             user_id: user.id,
           },
@@ -61,12 +150,20 @@ export function TransactionForm({
 
       if (submitError) throw submitError;
 
+      // Clear form and image preview
+      if (imagePreview) {
+        URL.revokeObjectURL(imagePreview);
+      }
+
       setTransaction({
         amount: "",
         category: categories[0],
         date: format(new Date(), "yyyy-MM-dd"),
         description: "",
+        receiptImage: null,
       });
+      setImagePreview(null);
+      setIsUploading(false);
 
       onSuccess();
 
@@ -122,6 +219,7 @@ export function TransactionForm({
           ? err.message
           : `Failed to add ${type}. Please try again.`
       );
+      setIsUploading(false);
       setTimeout(() => setError(null), 3000);
     }
   };
@@ -238,13 +336,89 @@ export function TransactionForm({
           </div>
         )}
 
+        {type === "expense" && (
+          <div className="col-span-full">
+            <label
+              htmlFor="receipt-image"
+              className="block text-sm font-medium text-black dark:text-white mb-1"
+            >
+              Receipt Image (optional)
+            </label>
+            <div className="flex items-center space-x-2">
+              <div className="relative flex-grow">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <Upload className="h-5 w-5 text-black dark:text-white" />
+                </div>
+                <input
+                  type="file"
+                  id="receipt-image"
+                  accept="image/*"
+                  onChange={handleFileChange}
+                  className="pl-10 block w-full rounded-md border-primary dark:border-primary-light focus:border-primary focus:ring-primary dark:bg-gray-700 dark:text-white sm:text-sm file:mr-4 file:py-1 file:px-3 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-primary file:text-white hover:file:bg-primary-dark"
+                />
+              </div>
+              {imagePreview && (
+                <button
+                  type="button"
+                  onClick={clearImage}
+                  className="p-2 text-red-500 hover:text-red-700 rounded-full hover:bg-red-100 dark:hover:bg-red-900"
+                  aria-label="Clear image"
+                >
+                  <X className="h-5 w-5" />
+                </button>
+              )}
+            </div>
+
+            {imagePreview && (
+              <div className="mt-2 relative">
+                <div className="relative w-40 h-40 border border-primary dark:border-primary-light rounded-md overflow-hidden">
+                  <img
+                    src={imagePreview}
+                    alt="Receipt preview"
+                    className="object-cover w-full h-full"
+                  />
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+
         <div className={type === "expense" ? "col-span-full" : ""}>
           <button
             type="submit"
-            className="w-full flex justify-center items-center px-4 py-2 border border-transparent rounded-md text-sm font-medium text-white bg-primary hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary dark:focus:ring-offset-gray-800 dark:hover:bg-primary-light dark:text-white dark:hover:text-gray-600"
+            disabled={isUploading}
+            className="w-full flex justify-center items-center px-4 py-2 border border-transparent rounded-md text-sm font-medium text-white bg-primary hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary dark:focus:ring-offset-gray-800 dark:hover:bg-primary-light dark:text-white dark:hover:text-gray-600 disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            <PlusCircle className="w-5 h-5 mr-2" />
-            Add {type === "expense" ? "Expense" : "Income"}
+            {isUploading ? (
+              <>
+                <svg
+                  className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <circle
+                    className="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    strokeWidth="4"
+                  ></circle>
+                  <path
+                    className="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                  ></path>
+                </svg>
+                Uploading...
+              </>
+            ) : (
+              <>
+                <PlusCircle className="w-5 h-5 mr-2" />
+                Add {type === "expense" ? "Expense" : "Income"}
+              </>
+            )}
           </button>
         </div>
       </form>

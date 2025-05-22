@@ -4,6 +4,7 @@ export type Expense = {
   category: string;
   description: string;
   date: string;
+  receipt_image_url?: string;
 };
 
 export type Income = {

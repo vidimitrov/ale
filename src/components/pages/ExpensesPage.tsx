@@ -9,6 +9,7 @@ import { TransactionList } from "../shared/TransactionList";
 import { ExpensesPieChart } from "../shared/ExpensesPieChart";
 import { IncomeExpenseProgress } from "../shared/IncomeExpenseProgress";
 import { supabase } from "../../lib/supabase";
+import type { Expense } from "../../types";
 
 const expenseCategories = [
   "Food & Dining",
@@ -22,7 +23,7 @@ const expenseCategories = [
 ];
 
 export default function ExpensesPage() {
-  const [expenses, setExpenses] = useState<any[]>([]);
+  const [expenses, setExpenses] = useState<Expense[]>([]);
   const [incomes, setIncomes] = useState<any[]>([]);
 
   const handleDelete = async (id: string) => {
@@ -32,9 +33,54 @@ export default function ExpensesPage() {
 
     if (confirmed) {
       try {
-        const { error } = await supabase.from("expenses").delete().eq("id", id);
+        // First, get the expense to check if it has a receipt image
+        const { data: expense, error: getError } = await supabase
+          .from("expenses")
+          .select("receipt_image_url")
+          .eq("id", id)
+          .single();
 
-        if (error) throw error;
+        if (getError) throw getError;
+
+        // Delete the expense from the database
+        const { error: deleteError } = await supabase
+          .from("expenses")
+          .delete()
+          .eq("id", id);
+
+        if (deleteError) throw deleteError;
+
+        // If the expense had a receipt image, delete it from storage
+        if (expense && expense.receipt_image_url) {
+          try {
+            // Extract the filename from the URL
+            const fileUrl = expense.receipt_image_url;
+            const urlObj = new URL(fileUrl);
+            const pathname = urlObj.pathname;
+            const segments = pathname.split("/");
+            const filename = segments[segments.length - 1];
+
+            console.log("Attempting to delete file:", filename);
+
+            // Delete the file from storage
+            const { data, error: storageError } = await supabase.storage
+              .from("ale-images")
+              .remove([filename]);
+
+            if (storageError) {
+              console.error("Error deleting receipt image:", storageError);
+            } else {
+              console.log("File deleted successfully:", data);
+            }
+          } catch (storageError) {
+            console.error(
+              "Error processing receipt image deletion:",
+              storageError
+            );
+            // Continue even if image deletion fails
+          }
+        }
+
         await showDeleteSuccess();
         await fetchData();
       } catch (error) {

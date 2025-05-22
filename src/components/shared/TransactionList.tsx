@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useState } from "react";
 import { format } from "date-fns";
 import type { Expense, Income } from "../../types";
+import { Receipt, X } from "lucide-react";
 
 interface TransactionListProps {
   type: "expense" | "income";
@@ -13,6 +14,16 @@ export function TransactionList({
   transactions,
   onDelete,
 }: TransactionListProps) {
+  const [selectedReceipt, setSelectedReceipt] = useState<string | null>(null);
+
+  const openReceiptModal = (imageUrl: string) => {
+    setSelectedReceipt(imageUrl);
+  };
+
+  const closeReceiptModal = () => {
+    setSelectedReceipt(null);
+  };
+
   if (transactions.length === 0) {
     return (
       <p className="text-gray-500 dark:text-gray-400 text-center py-8">
@@ -24,6 +35,32 @@ export function TransactionList({
 
   return (
     <div>
+      {/* Receipt Image Modal */}
+      {selectedReceipt && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white dark:bg-gray-800 rounded-lg max-w-3xl w-full max-h-[90vh] overflow-auto flex flex-col">
+            <div className="p-4 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center">
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                Receipt Image
+              </h3>
+              <button
+                onClick={closeReceiptModal}
+                className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+              >
+                <X className="h-6 w-6" />
+              </button>
+            </div>
+            <div className="p-4 flex-grow flex items-center justify-center">
+              <img
+                src={selectedReceipt}
+                alt="Receipt"
+                className="max-w-full max-h-[70vh] object-contain"
+              />
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Mobile view */}
       <div className="md:hidden space-y-4">
         {transactions.map((transaction) => (
@@ -53,6 +90,19 @@ export function TransactionList({
                   {type === "expense" ? "-" : "+"}$
                   {transaction.amount.toFixed(2)}
                 </span>
+                {type === "expense" &&
+                  "receipt_image_url" in transaction &&
+                  transaction.receipt_image_url && (
+                    <button
+                      onClick={() =>
+                        openReceiptModal(transaction.receipt_image_url!)
+                      }
+                      className="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300"
+                      title="View Receipt"
+                    >
+                      <Receipt className="h-5 w-5" />
+                    </button>
+                  )}
                 <button
                   onClick={() => onDelete?.(transaction.id)}
                   className="text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300"
@@ -118,6 +168,14 @@ export function TransactionList({
                   Notes
                 </th>
               )}
+              {type === "expense" && (
+                <th
+                  scope="col"
+                  className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider"
+                >
+                  Receipt
+                </th>
+              )}
               <th
                 scope="col"
                 className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider"
@@ -150,6 +208,24 @@ export function TransactionList({
                 {type === "expense" && "description" in transaction && (
                   <td className="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">
                     {transaction.description || "-"}
+                  </td>
+                )}
+                {type === "expense" && (
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                    {"receipt_image_url" in transaction &&
+                    transaction.receipt_image_url ? (
+                      <button
+                        onClick={() =>
+                          openReceiptModal(transaction.receipt_image_url!)
+                        }
+                        className="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300"
+                        title="View Receipt"
+                      >
+                        <Receipt className="h-5 w-5" />
+                      </button>
+                    ) : (
+                      "-"
+                    )}
                   </td>
                 )}
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
