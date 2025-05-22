@@ -1,0 +1,107 @@
+{
+  "id": "d0d2ea8d",
+  "name": "Add Receipt Image Upload to Expense Tracker",
+  "objective": "Add the ability to upload and associate receipt images with expense records using Supabase Storage.",
+  "facts": [
+    "The expense tracker currently accepts amount, category, date, and description.",
+    "The new feature is to add receipt image upload capability.",
+    "Supabase is used as the backend and its file storage mechanism will be utilized.",
+    "Uploaded images will be stored in Supabase Storage.",
+    "Expense records will be updated with a reference to the uploaded receipt image.",
+    "The existing expenses table schema includes id (uuid), user_id (uuid), amount (decimal), category (text), description (text), date (date), created_at (timestamp).",
+    "The receipt image reference will be stored as an optional full URL string in the expense record.",
+    "File upload will be handled client-side in the expense form.",
+    "The Supabase Storage bucket to use is 'ale-images'.",
+    "The image upload is optional for the user.",
+    "Image preview will be shown in the expense form before submission.",
+    "Receipt image will be displayed only in the expense detail view, not in the list.",
+    "Users can replace or delete uploaded receipt images later.",
+    "Replacing or deleting images is allowed only in the expense detail view.",
+    "Deleting an image removes the file from Supabase Storage and clears the reference in the expense record."
+  ],
+  "dependencies": [
+    "Supabase Storage for file uploads",
+    "Expense record schema update to include image reference"
+  ],
+  "rules": [
+    "Use Supabase Storage for storing receipt images.",
+    "Store a reference to the uploaded image in the expense record, typically a URL or file path.",
+    "Image upload is optional for users.",
+    "Show image preview in the expense form before submission.",
+    "Display receipt image only in expense detail view.",
+    "Allow users to replace or delete uploaded receipt images.",
+    "Replacing or deleting images is allowed only in the expense detail view.",
+    "Deleting an image removes the file from Supabase Storage and clears the reference in the expense record."
+  ],
+  "decisions": [
+    "Store the full URL path of the receipt image as an optional text field in the expense record.",
+    "Use the existing Supabase Storage bucket 'ale-images' for storing receipt images.",
+    "File upload will be handled client-side in the expense form.",
+    "Show image preview in the expense form before submission.",
+    "Display receipt image only in the expense detail view, not in the list.",
+    "Allow users to replace or delete receipt images only in the expense detail view.",
+    "Deleting an image will remove the file from Supabase Storage and clear the reference in the expense record."
+  ],
+  "summary": "The session focuses on enhancing the expense tracker by enabling users to upload receipt images. This involves integrating file upload in the expense form, storing images in the existing 'ale-images' Supabase Storage bucket, and updating expense records with an optional full URL string referencing the receipt image. The expense table schema will be updated accordingly with example SQL code. File upload will be handled client-side and is optional for users. UI/UX details include showing image preview in the form, displaying images only in the detail view, and allowing users to replace or delete images only in the detail view. Deleting an image will also remove the file from Supabase Storage and clear the reference in the expense record. The plan includes essential code snippets for database migration, React component file input and preview, Supabase Storage upload and deletion, and expense record update. File structure suggestions include extending ExpenseForm.tsx and ExpenseDetail.tsx components and ensuring Supabase client configuration.",
+  "tasks": [
+    {
+      "id": 1,
+      "title": "Define database schema update for receipt image reference",
+      "completed": false,
+      "objective": "Determine the field(s) needed in the expense record to store the receipt image reference and any metadata.",
+      "rules": ["Ensure compatibility with Supabase Storage references."],
+      "steps": [
+        "Decide on storing URL/path or additional metadata like file name and upload date.",
+        "Update the expense record schema accordingly with an optional text field for full URL.",
+        "Include example SQL code for the schema update, e.g., ALTER TABLE expenses ADD COLUMN receipt_image_url text;"
+      ]
+    },
+    {
+      "id": 2,
+      "title": "Implement file upload integration in expense form",
+      "completed": false,
+      "objective": "Add file input to the expense form and handle image upload to Supabase Storage.",
+      "rules": [
+        "Use Supabase Storage SDK for file uploads.",
+        "Handle upload success and failure scenarios."
+      ],
+      "steps": [
+        "Add file input element to the expense form with image preview using React state and URL.createObjectURL.",
+        "Implement upload logic to Supabase Storage bucket 'ale-images' on form submission using Supabase client SDK.",
+        "Handle upload response and errors with user feedback.",
+        "Show image preview in the expense form before submission."
+      ]
+    },
+    {
+      "id": 3,
+      "title": "Update expense record with receipt image reference",
+      "completed": false,
+      "objective": "After successful image upload, update or create the expense record with the image reference.",
+      "rules": [
+        "Ensure the expense record correctly stores the image reference."
+      ],
+      "steps": [
+        "On successful upload, retrieve the image full URL from Supabase Storage public URL.",
+        "Update the expense record with this URL in the new optional field using Supabase client."
+      ]
+    },
+    {
+      "id": 4,
+      "title": "Design UI/UX for receipt image display and management",
+      "completed": false,
+      "objective": "Decide how to display uploaded receipt images and allow users to replace or delete them.",
+      "rules": [
+        "Provide image preview in the expense form or list.",
+        "Allow users to replace or delete uploaded images.",
+        "Replacing or deleting images is allowed only in the expense detail view.",
+        "Deleting an image removes the file from Supabase Storage and clears the reference in the expense record."
+      ],
+      "steps": [
+        "Display receipt image only in the expense detail view, not in the list.",
+        "Implement replace and delete functionality for receipt images in the expense detail view.",
+        "Deleting an image removes the file from Supabase Storage and clears the reference in the expense record.",
+        "Provide user feedback and confirmation dialogs for delete actions."
+      ]
+    }
+  ]
+}

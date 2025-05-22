@@ -28,3 +28,6 @@ development.ts
 
 # Next.js
 .next
+
+# Buildforce
+buildforce/*
